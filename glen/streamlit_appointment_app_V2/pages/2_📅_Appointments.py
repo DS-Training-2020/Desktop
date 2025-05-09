@@ -77,11 +77,23 @@ def appointment_form(key_suffix=""):
 
 def display_appointments():
     st.header("Your Appointments")
+    
+    # Add filter for appointment type
+    filter_type = st.selectbox(
+        "Filter by Appointment Type",
+        ["All"] + list(APPOINTMENT_TYPES.keys()),
+        key="filter_type"
+    )
+    
     appointments = get_user_appointments(user["username"])
     
     if not appointments:
         st.info("You have no upcoming appointments.")
         return
+    
+    # Apply filter
+    if filter_type != "All":
+        appointments = [a for a in appointments if a['appointment_type'] == filter_type]
     
     for i, appt in enumerate(appointments):
         appointment_date = datetime.fromisoformat(appt['date'])
